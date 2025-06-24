@@ -15,12 +15,15 @@ export default function Login() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+
     if (error) {
       setError(error.message)
     } else {
       setError('')
-      router.push('/') // redirect to home or dashboard
+      const user = data.user
+      const role = user.user_metadata?.role || 'student'
+      router.push(`/dashboard/${role}`)
     }
   }
 
